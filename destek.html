@@ -8,23 +8,100 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    emailjs.init("8BdNp7u1PufddSEM8"); // EmailJS Public Key
-  </script>
   <style>
-    /* Mevcut stil tanımlarınız */
+    :root {
+      --primary-color: #6a11cb;
+      --secondary-color: #2575fc;
+      --accent-color: #6f42c1;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+    }
+    
+    .hero-section {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      border-radius: 0 0 20px 20px;
+    }
+    
+    .feature-card {
+      transition: all 0.3s ease;
+      border: none;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    
+    .icon-circle {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      background: rgba(106, 17, 203, 0.1);
+      color: var(--primary-color);
+      font-size: 2rem;
+    }
+    
+    .thank-you-card {
+      border: 2px dashed var(--accent-color);
+      background-color: rgba(111, 66, 193, 0.05);
+    }
+    
+    .copy-btn {
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+      background-color: #f1f1f1;
+    }
   </style>
 </head>
 <body>
-  <!-- Mevcut HTML içeriğiniz -->
+  <!-- Hero Section -->
+  <section class="hero-section py-5">
+    <div class="container py-4">
+      <div class="row align-items-center">
+        <div class="col-lg-7 mb-4 mb-lg-0">
+          <h1 class="display-5 fw-bold mb-3">
+            <i class="bi bi-people-fill me-2"></i>Projemize Destek Olun
+          </h1>
+          <p class="lead mb-4">
+            Osmanlıca öğrenme yolculuğunu birlikte daha güçlü hale getirelim. 
+            Açık kaynak topluluğumuza katılın veya maddi destek sağlayın.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#contribute" class="btn btn-light btn-lg px-4">
+              <i class="bi bi-code-square me-2"></i>Katkıda Bulun
+            </a>
+            <a href="#donate" class="btn btn-outline-light btn-lg px-4">
+              <i class="bi bi-heart-fill me-2"></i>Destek Ol
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block">
+          <img src="https://cdn.pixabay.com/photo/2017/07/31/11/21/people-2557399_1280.jpg" 
+               alt="Topluluk" class="img-fluid rounded-3 shadow">
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Teşekkür Mesajı Bölümü -->
   <section class="container my-5" id="thank-you-section" style="display: none;">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <div class="card border-0 shadow-sm">
+        <div class="card thank-you-card border-0 shadow-sm">
           <div class="card-body text-center p-5">
             <div class="icon-circle bg-success bg-opacity-10 text-success mb-4 mx-auto">
               <i class="bi bi-check-circle-fill"></i>
@@ -46,7 +123,86 @@
     </div>
   </section>
 
-  <!-- Mevcut diğer bölümler -->
+  <!-- Katkı Seçenekleri -->
+  <section id="contribute" class="container my-5 py-4">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">Nasıl Katkıda Bulunabilirsiniz?</h2>
+      <p class="lead text-muted">Açık kaynak projemize farklı şekillerde destek olabilirsiniz</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <div class="card feature-card h-100 border-0">
+          <div class="card-body text-center p-4">
+            <div class="icon-circle">
+              <i class="bi bi-github"></i>
+            </div>
+            <h3 class="h5 mb-3">Kod Katkısı</h3>
+            <p class="text-muted mb-4">
+              GitHub üzerinden hata düzeltmeleri yapın veya yeni özellikler geliştirin.
+            </p>
+            <a href="https://github.com/ozzasci/Osmanl-ca" class="btn btn-outline-primary stretched-link">
+              <i class="bi bi-arrow-right me-1"></i>Katıl
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Diğer katkı seçenekleri... -->
+    </div>
+  </section>
+
+  <!-- Bağış Bölümü -->
+  <section id="donate" class="bg-light py-5 my-5">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-4 mb-lg-0">
+          <h2 class="fw-bold mb-3">Maddi Destekte Bulunun</h2>
+          <p class="lead mb-4">
+            Projemizin sürdürülebilirliği için bağışlarınız büyük önem taşıyor. 
+            Her katkınız bize yeni özellikler eklemek ve sunucu maliyetlerini karşılamak için güç veriyor.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="bagıs.html" class="btn btn-primary px-4">
+              <i class="bi bi-currency-exchange me-2"></i>Bağış Yap
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4">
+              <h4 class="mb-4"><i class="bi bi-credit-card me-2"></i>Banka Hesap Bilgileri</h4>
+              
+              <div class="card mb-3">
+                <div class="card-body">
+                  <div class="d-flex align-items-center mb-3">
+                    <img src="https://logo.clearbit.com/ziraatbank.com.tr" 
+                         alt="Ziraat Bankası" style="height: 28px; margin-right: 12px;">
+                    <h5 class="mb-0">Ziraat Bankası</h5>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <div class="flex-grow-1">
+                      <span class="text-muted small d-block">IBAN:</span>
+                      <code class="d-block p-2 bg-light rounded mt-1">TR34 0001 0017 6290 1739 4550 01</code>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary ms-3 copy-btn" 
+                            data-clipboard-text="TR34 0001 0017 6290 1739 4550 01">
+                      <i class="bi bi-clipboard"></i> Kopyala
+                    </button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle me-2"></i>
+                Bağış yaptıktan sonra bize bilgi verirseniz teşekkür mesajı gönderebiliriz.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -60,52 +216,33 @@
       const name = urlParams.get('name') || 'Değerli Destekçimiz';
       
       if (status === 'success' && amount) {
-        document.getElementById('thank-you-section').style.display = 'block';
-        document.getElementById('donation-message').textContent = 
-          `${name}, ${amount}₺ bağışınız için çok teşekkür ederiz!`;
-        
-        // Sayfayı teşekkür bölümüne kaydır
-        setTimeout(() => {
-          document.getElementById('thank-you-section').scrollIntoView({ behavior: 'smooth' });
-        }, 300);
+        const thankYouSection = document.getElementById('thank-you-section');
+        if (thankYouSection) {
+          thankYouSection.style.display = 'block';
+          const donationMessage = document.getElementById('donation-message');
+          if (donationMessage) {
+            donationMessage.textContent = `${name}, ${amount}₺ bağışınız için çok teşekkür ederiz!`;
+          }
+          
+          setTimeout(() => {
+            thankYouSection.scrollIntoView({ behavior: 'smooth' });
+          }, 300);
+        }
       }
       
-      // İletişim formu gönderimi
-      document.getElementById('contact-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const submitBtn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-        const feedback = document.getElementById('form-feedback');
-        
-        // Buton durumunu güncelle
-        submitBtn.disabled = true;
-        btnText.textContent = 'Gönderiliyor...';
-        btnSpinner.classList.remove('d-none');
-        feedback.textContent = '';
-        
-        const templateParams = {
-          from_name: document.getElementById('name').value,
-          from_email: document.getElementById('email').value,
-          message: document.getElementById('message').value
-        };
-
-        emailjs.send("service_1avrv0q", "template_pc99ct6", templateParams)
-          .then(function() {
-            feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>Mesajınız başarıyla gönderildi!</span>';
-            document.getElementById('contact-form').reset();
-          }, function(error) {
-            feedback.innerHTML = '<span class="text-danger"><i class="bi bi-exclamation-circle me-1"></i>Hata oluştu: ' + error + '</span>';
-          })
-          .finally(function() {
-            submitBtn.disabled = false;
-            btnText.textContent = 'Gönder';
-            btnSpinner.classList.add('d-none');
+      // Kopyala butonları
+      document.querySelectorAll('.copy-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const text = this.getAttribute('data-clipboard-text');
+          navigator.clipboard.writeText(text).then(function() {
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="bi bi-check"></i> Kopyalandı';
+            setTimeout(function() {
+              btn.innerHTML = originalText;
+            }, 2000);
           });
+        });
       });
-      
-      // Diğer mevcut JavaScript kodlarınız
     });
   </script>
 </body>

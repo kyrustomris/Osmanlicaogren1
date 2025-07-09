@@ -8,11 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <!-- EmailJS SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-  <script>
-    emailjs.init("8BdNp7u1PufddSEM8"); // EmailJS Public Key
-  </script>
   <style>
     :root {
       --primary-color: #6a11cb;
@@ -22,24 +17,26 @@
     
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
     }
     
-    .hero-gradient {
+    .hero-section {
       background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      border-radius: 0 0 20px 20px;
       color: white;
+      border-radius: 0 0 20px 20px;
     }
     
     .feature-card {
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: all 0.3s ease;
       border: none;
       border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     
     .feature-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
     
     .icon-circle {
@@ -50,8 +47,8 @@
       justify-content: center;
       margin: 0 auto 20px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.1);
-      color: white;
+      background: rgba(106, 17, 203, 0.1);
+      color: var(--primary-color);
       font-size: 2rem;
     }
     
@@ -71,14 +68,12 @@
     }
     
     .copy-btn:hover {
-      background-color: #f8f9fa;
+      background-color: #f1f1f1;
     }
     
-    .floating-buttons {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      z-index: 1000;
+    .thank-you-card {
+      border: 2px dashed var(--accent-color);
+      background-color: rgba(111, 66, 193, 0.05);
     }
     
     .floating-btn {
@@ -88,39 +83,27 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      margin-bottom: 12px;
-      transition: all 0.3s ease;
       box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      transition: all 0.3s ease;
     }
     
     .floating-btn:hover {
-      transform: translateY(-5px) scale(1.1);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      transform: translateY(-3px) scale(1.1);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
     }
     
-    .donate-btn {
-      background-color: var(--accent-color);
-      color: white;
-    }
-    
-    #form-feedback {
-      font-size: 0.95rem;
-    }
-    
-    .newsletter-form {
-      background: rgba(255,255,255,0.1);
-      border-radius: 12px;
-      padding: 20px;
+    .donation-alert {
+      border-left: 4px solid var(--accent-color);
     }
   </style>
 </head>
 <body>
   <!-- Hero Section -->
-  <section class="hero-gradient py-5">
-    <div class="container py-4 py-md-5">
+  <section class="hero-section py-5">
+    <div class="container py-4">
       <div class="row align-items-center">
         <div class="col-lg-7 mb-4 mb-lg-0">
-          <h1 class="display-4 fw-bold mb-3">
+          <h1 class="display-5 fw-bold mb-3">
             <i class="bi bi-people-fill me-2"></i>Projemize Destek Olun
           </h1>
           <p class="lead mb-4">
@@ -144,47 +127,33 @@
     </div>
   </section>
 
-  <!-- Announcements Section -->
-  <section class="container my-5 py-3">
-    <div class="row align-items-center">
-      <div class="col-lg-8 mb-4 mb-lg-0">
-        <h3 class="fw-bold mb-3">Son Güncellemeler & Duyurular</h3>
-        <div class="list-group">
-          <div class="list-group-item border-0 shadow-sm mb-2 rounded-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <h5 class="mb-0 fw-bold">v2.1 Güncellemesi Yayında!</h5>
-              <span class="badge bg-success">Yeni</span>
+  <!-- Bağış Teşekkür Mesajı -->
+  <section class="container my-5" id="thank-you-section" style="display: none;">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card thank-you-card border-0 shadow-sm">
+          <div class="card-body text-center p-5">
+            <div class="icon-circle bg-success bg-opacity-10 text-success mb-4 mx-auto">
+              <i class="bi bi-check-circle-fill"></i>
             </div>
-            <small class="text-muted d-block mb-2">04 Temmuz 2025</small>
-            <p class="mb-0">Quiz modunda iyileştirmeler ve 150 yeni kelime eklendi. Kullanıcı arayüzü yenilendi.</p>
+            <h2 class="mb-3">Teşekkür Ederiz!</h2>
+            <p id="donation-message" class="lead mb-4"></p>
+            <p class="text-muted">Destekleriniz projemizin devamını sağlıyor.</p>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+              <a href="index.html" class="btn btn-primary px-4">
+                <i class="bi bi-house-door me-2"></i>Ana Sayfa
+              </a>
+              <a href="#donate" class="btn btn-outline-primary px-4">
+                <i class="bi bi-currency-exchange me-2"></i>Tekrar Bağış Yap
+              </a>
+            </div>
           </div>
-          <div class="list-group-item border-0 shadow-sm rounded-3">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-              <h5 class="mb-0 fw-bold">Topluluk Buluşması</h5>
-              <span class="badge bg-info text-dark">Etkinlik</span>
-            </div>
-            <small class="text-muted d-block mb-2">01 Temmuz 2025</small>
-            <p class="mb-0">10 Temmuz'da saat 20:00'de çevrimiçi toplanıyoruz. Katılmak için kayıt olun.</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="newsletter-form text-white">
-          <h4 class="mb-3">Gelişmelerden Haberdar Olun</h4>
-          <form action="https://YOUR_MAILCHIMP_URL" method="post" target="_blank">
-            <div class="mb-3">
-              <input type="email" class="form-control" placeholder="E-posta adresiniz" required>
-            </div>
-            <button type="submit" class="btn btn-light w-100">
-              <i class="bi bi-envelope-plus me-2"></i>Abone Ol
-            </button>
-          </form>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Contribution Section -->
+  <!-- Katkı Seçenekleri -->
   <section id="contribute" class="container my-5 py-4">
     <div class="text-center mb-5">
       <h2 class="fw-bold mb-3">Nasıl Katkıda Bulunabilirsiniz?</h2>
@@ -192,14 +161,14 @@
     </div>
     
     <div class="row g-4">
-      <!-- Code Contribution -->
+      <!-- Kod Katkısı -->
       <div class="col-md-6 col-lg-3">
         <div class="card feature-card h-100 border-0">
           <div class="card-body text-center p-4">
-            <div class="icon-circle bg-primary bg-opacity-10 text-primary">
+            <div class="icon-circle">
               <i class="bi bi-github"></i>
             </div>
-            <h3 class="h4 mb-3">Kod Katkısı</h3>
+            <h3 class="h5 mb-3">Kod Katkısı</h3>
             <p class="text-muted mb-4">
               GitHub üzerinden hata düzeltmeleri yapın veya yeni özellikler geliştirin.
             </p>
@@ -210,54 +179,54 @@
         </div>
       </div>
       
-      <!-- Translation -->
+      <!-- Çeviri -->
       <div class="col-md-6 col-lg-3">
         <div class="card feature-card h-100 border-0">
           <div class="card-body text-center p-4">
-            <div class="icon-circle bg-success bg-opacity-10 text-success">
+            <div class="icon-circle">
               <i class="bi bi-translate"></i>
             </div>
-            <h3 class="h4 mb-3">Çeviri</h3>
+            <h3 class="h5 mb-3">Çeviri</h3>
             <p class="text-muted mb-4">
               İçerikleri farklı dillere çevirerek daha geniş kitlelere ulaşmamıza yardımcı olun.
             </p>
-            <a href="#" class="btn btn-outline-success stretched-link">
+            <a href="#" class="btn btn-outline-primary stretched-link">
               <i class="bi bi-arrow-right me-1"></i>Katıl
             </a>
           </div>
         </div>
       </div>
       
-      <!-- Documentation -->
+      <!-- Dökümantasyon -->
       <div class="col-md-6 col-lg-3">
         <div class="card feature-card h-100 border-0">
           <div class="card-body text-center p-4">
-            <div class="icon-circle bg-info bg-opacity-10 text-info">
+            <div class="icon-circle">
               <i class="bi bi-file-earmark-text"></i>
             </div>
-            <h3 class="h4 mb-3">Dökümantasyon</h3>
+            <h3 class="h5 mb-3">Dökümantasyon</h3>
             <p class="text-muted mb-4">
               Kullanım kılavuzlarını geliştirerek kullanıcı deneyimini iyileştirin.
             </p>
-            <a href="#" class="btn btn-outline-info stretched-link">
+            <a href="#" class="btn btn-outline-primary stretched-link">
               <i class="bi bi-arrow-right me-1"></i>Katıl
             </a>
           </div>
         </div>
       </div>
       
-      <!-- Promotion -->
+      <!-- Yaygınlaştırma -->
       <div class="col-md-6 col-lg-3">
         <div class="card feature-card h-100 border-0">
           <div class="card-body text-center p-4">
-            <div class="icon-circle bg-warning bg-opacity-10 text-warning">
+            <div class="icon-circle">
               <i class="bi bi-share"></i>
             </div>
-            <h3 class="h4 mb-3">Yaygınlaştırma</h3>
+            <h3 class="h5 mb-3">Yaygınlaştırma</h3>
             <p class="text-muted mb-4">
               Projeyi sosyal medyada paylaşarak daha fazla kişiye ulaşmasını sağlayın.
             </p>
-            <a href="#" class="btn btn-outline-warning stretched-link">
+            <a href="#" class="btn btn-outline-primary stretched-link">
               <i class="bi bi-arrow-right me-1"></i>Paylaş
             </a>
           </div>
@@ -266,7 +235,7 @@
     </div>
   </section>
 
-  <!-- Donation Section -->
+  <!-- Bağış Bölümü -->
   <section id="donate" class="bg-light py-5 my-5">
     <div class="container">
       <div class="row align-items-center">
@@ -277,8 +246,8 @@
             Her katkınız bize yeni özellikler eklemek ve sunucu maliyetlerini karşılamak için güç veriyor.
           </p>
           <div class="d-flex flex-wrap gap-3">
-            <a href="#bank-info" class="btn btn-primary px-4">
-              <i class="bi bi-bank me-2"></i>Banka Bilgileri
+            <a href="bagıs.html" class="btn btn-primary px-4">
+              <i class="bi bi-currency-exchange me-2"></i>Bağış Yap
             </a>
             <a href="#contact" class="btn btn-outline-secondary px-4">
               <i class="bi bi-question-circle me-2"></i>Destek Al
@@ -310,8 +279,8 @@
                 </div>
               </div>
               
-              <div class="alert alert-info mt-3">
-                <i class="bi bi-info-circle me-2"></i>
+              <div class="alert donation-alert alert-light mt-3">
+                <i class="bi bi-info-circle me-2 text-primary"></i>
                 Bağış yaptıktan sonra bize bilgi verirseniz teşekkür mesajı gönderebiliriz.
               </div>
             </div>
@@ -321,54 +290,47 @@
     </div>
   </section>
 
-  <!-- Contact Form -->
+  <!-- İletişim Formu -->
   <section id="contact" class="container my-5 py-4">
     <div class="row justify-content-center">
       <div class="col-lg-8">
-        <h2 class="fw-bold mb-4 text-center">Bize Ulaşın</h2>
-        <p class="text-muted text-center mb-5">
-          Sorularınız, önerileriniz veya geri bildirimleriniz için aşağıdaki formu kullanabilirsiniz.
-        </p>
-        
-        <form id="contact-form" class="needs-validation" novalidate>
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="name" class="form-label">Adınız</label>
-              <input type="text" class="form-control" id="name" required>
-              <div class="invalid-feedback">
-                Lütfen adınızı giriniz.
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5">
+            <h2 class="text-center mb-4">Bize Ulaşın</h2>
+            <p class="text-center text-muted mb-5">
+              Sorularınız, önerileriniz veya geri bildirimleriniz için aşağıdaki formu kullanabilirsiniz.
+            </p>
+            
+            <form id="contact-form">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="name" class="form-label">Adınız</label>
+                  <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="email" class="form-label">E-posta</label>
+                  <input type="email" class="form-control" id="email" required>
+                </div>
+                <div class="col-12">
+                  <label for="message" class="form-label">Mesajınız</label>
+                  <textarea class="form-control" id="message" rows="4" required></textarea>
+                </div>
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary w-100 py-2">
+                    <i class="bi bi-send me-2"></i>Gönder
+                  </button>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6">
-              <label for="email" class="form-label">E-posta</label>
-              <input type="email" class="form-control" id="email" required>
-              <div class="invalid-feedback">
-                Lütfen geçerli bir e-posta adresi giriniz.
-              </div>
-            </div>
-            <div class="col-12">
-              <label for="message" class="form-label">Mesajınız</label>
-              <textarea class="form-control" id="message" rows="4" required></textarea>
-              <div class="invalid-feedback">
-                Lütfen mesajınızı yazınız.
-              </div>
-            </div>
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary px-4" id="submit-btn">
-                <span id="btn-text">Gönder</span>
-                <span id="btn-spinner" class="spinner-border spinner-border-sm d-none ms-2"></span>
-              </button>
-              <span id="form-feedback" class="ms-3"></span>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- FAQ Section -->
+  <!-- SSS Bölümü -->
   <section class="container my-5 py-4">
-    <h2 class="fw-bold mb-4 text-center">Sıkça Sorulan Sorular</h2>
+    <h2 class="text-center fw-bold mb-5">Sıkça Sorulan Sorular</h2>
     
     <div class="accordion" id="faqAccordion">
       <div class="accordion-item border-0 shadow-sm mb-3 rounded-3 overflow-hidden">
@@ -407,10 +369,10 @@
     </div>
   </section>
 
-  <!-- Community Section -->
+  <!-- Topluluk Bölümü -->
   <section class="bg-light py-5 my-5">
     <div class="container text-center">
-      <div class="icon-circle bg-primary text-white mx-auto mb-4">
+      <div class="icon-circle mb-4 mx-auto">
         <i class="bi bi-people-fill"></i>
       </div>
       <h2 class="fw-bold mb-3">Topluluğa Katılın</h2>
@@ -451,45 +413,44 @@
     </div>
   </footer>
 
-  <!-- Floating Action Buttons -->
-  <div class="floating-buttons">
-    <a href="https://wa.me/905309082276" class="floating-btn btn btn-success" 
-       data-bs-toggle="tooltip" title="WhatsApp ile ulaşın">
-      <i class="bi bi-whatsapp"></i>
-    </a>
-    <a href="https://t.me/Ozzasci" class="floating-btn btn btn-primary" 
-       data-bs-toggle="tooltip" title="Telegram grubumuza katılın">
-      <i class="bi bi-telegram"></i>
-    </a>
-    <button id="quick-email" class="floating-btn btn btn-info" 
-            data-bs-toggle="tooltip" title="Hızlı e-posta gönder">
-      <i class="bi bi-envelope"></i>
-    </button>
-    <a href="#donate" class="floating-btn donate-btn" 
-       data-bs-toggle="tooltip" title="Bağış yapın">
-      <i class="bi bi-gift"></i>
-    </a>
+  <!-- Hızlı Erişim Butonları -->
+  <div class="position-fixed" style="bottom: 25px; right: 25px; z-index: 1000;">
+    <div class="d-flex flex-column gap-3">
+      <a href="https://wa.me/905309082276" class="floating-btn btn btn-success" 
+         data-bs-toggle="tooltip" title="WhatsApp ile ulaşın">
+        <i class="bi bi-whatsapp"></i>
+      </a>
+      <a href="https://t.me/Ozzasci" class="floating-btn btn btn-primary" 
+         data-bs-toggle="tooltip" title="Telegram grubumuza katılın">
+        <i class="bi bi-telegram"></i>
+      </a>
+      <a href="bagıs.html" class="floating-btn btn btn-danger" 
+         data-bs-toggle="tooltip" title="Bağış yapın">
+        <i class="bi bi-heart-fill"></i>
+      </a>
+    </div>
   </div>
 
-  <!-- Back to Top Button -->
-       <a href="index.html" class="btn btn-primary rounded-circle position-fixed" 
-   style="width: 50px; height: 50px; bottom: 20px; left: 20px; display: flex; align-items: center; justify-content: center;"
-   data-bs-toggle="tooltip" title="Ana Sayfaya Dön">
-  <i class="bi bi-house-door"></i>
-</a>
+  <!-- Ana Sayfaya Dön Butonu -->
+  <a href="index.html" class="btn btn-primary rounded-circle position-fixed" 
+     style="width: 50px; height: 50px; bottom: 20px; left: 20px; display: flex; align-items: center; justify-content: center;"
+     data-bs-toggle="tooltip" title="Ana Sayfaya Dön">
+    <i class="bi bi-house-door"></i>
+  </a>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   
   <script>
-    // Initialize tooltips
+    // Sayfa yüklendiğinde
     document.addEventListener('DOMContentLoaded', function() {
+      // Tooltip'leri etkinleştir
       var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
       var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
       });
       
-      // Copy IBAN functionality
+      // Kopyala butonları
       document.querySelectorAll('.copy-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
           const text = this.getAttribute('data-clipboard-text');
@@ -503,59 +464,52 @@
         });
       });
       
-      // Quick email button
-      document.getElementById('quick-email').addEventListener('click', function() {
-        const email = prompt("E-posta adresinizi girin:", "");
-        if (email) {
-          const message = prompt("Mesajınızı kısaca yazın:", "");
-          if (message) {
-            emailjs.send("service_1avrv0q", "template_pc99ct6", {
-              from_email: email,
-              message: message
-            }).then(function() {
-              alert("Mesajınız başarıyla gönderildi!");
-            }, function(error) {
-              alert("Hata oluştu: " + JSON.stringify(error));
-            });
-          }
-        }
-      });
+      // Bağış teşekkür mesajını kontrol et
+      const urlParams = new URLSearchParams(window.location.search);
+      const donationAmount = urlParams.get('amount');
+      const donationName = urlParams.get('name') || 'Değerli Destekçimiz';
       
-      // Contact form submission
+      if (donationAmount) {
+        document.getElementById('thank-you-section').style.display = 'block';
+        document.getElementById('donation-message').textContent = 
+          `${donationName}, ${donationAmount}₺ bağışınız için çok teşekkür ederiz!`;
+        
+        // Sayfayı teşekkür bölümüne kaydır
+        setTimeout(() => {
+          document.getElementById('thank-you-section').scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+      
+      // İletişim formu gönderimi
       document.getElementById('contact-form').addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const form = e.target;
-        if (!form.checkValidity()) {
-          e.stopPropagation();
-          form.classList.add('was-validated');
-          return;
-        }
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
         
-        const submitBtn = document.getElementById('submit-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnSpinner = document.getElementById('btn-spinner');
-        const feedback = document.getElementById('form-feedback');
-        
-        // Update button state
+        // Buton durumunu güncelle
         submitBtn.disabled = true;
-        btnText.textContent = 'Gönderiliyor...';
-        btnSpinner.classList.remove('d-none');
-        feedback.textContent = '';
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Gönderiliyor...';
         
-        // Simulate form submission (replace with actual EmailJS code)
-        setTimeout(function() {
-          // Reset form
-          form.reset();
-          form.classList.remove('was-validated');
+        // Form verilerini al
+        const formData = {
+          name: document.getElementById('name').value,
+          email: document.getElementById('email').value,
+          message: document.getElementById('message').value
+        };
+        
+        // Burada normalde bir API'ye istek atardınız
+        // Şimdi sadece simüle ediyoruz
+        setTimeout(() => {
+          // Başarılı mesajı göster
+          alert('Mesajınız başarıyla gönderildi! En kısa sürede dönüş yapacağız.');
           
-          // Show success message
-          feedback.innerHTML = '<span class="text-success"><i class="bi bi-check-circle me-1"></i>Mesajınız başarıyla gönderildi!</span>';
-     
-          // Reset button
+          // Formu temizle
+          this.reset();
+          
+          // Butonu eski haline getir
           submitBtn.disabled = false;
-          btnText.textContent = 'Gönder';
-          btnSpinner.classList.add('d-none');
+          submitBtn.innerHTML = originalText;
         }, 1500);
       });
     });

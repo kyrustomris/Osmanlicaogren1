@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osmanlıca Öğren</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lateef&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="themes.css">
+    <style>
+        .social-media-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        .social-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        }
+        .support-btn {
+            background-color: #6f42c1;
+            color: white;
+        }
+        #quizModal .modal-content { min-width: 320px;}
+        #quizModal .quiz-option { min-width: 200px; }
+    </style>
+</head>
+<body class="light-theme">
+    <div class="ottoman-frame">
+        <div class="container py-4">
+        <header class="text-center mb-4">
+            <h1><i class="bi bi-book"></i> Osmanlıca Öğren</h1>
+            <div class="d-flex justify-content-center align-items-center gap-3">
+                <div class="theme-switcher btn-group mt-2">
+                    <button class="btn btn-sm btn-light theme-btn active" data-theme="light" title="Açık tema">
+                        <i class="bi bi-sun-fill"></i>
+                    </button>
+                    <button class="btn btn-sm btn-dark theme-btn" data-theme="dark" title="Koyu tema">
+                        <i class="bi bi-moon-fill"></i>
+                    </button>
+                    <button class="btn btn-sm btn-warning theme-btn" data-theme="ottoman" title="Osmanlı teması">
+                        <i class="bi bi-palette-fill"></i>
+                    </button>
+                </div>
+                <span id="premiumBadge" class="badge bg-warning text-dark mt-2 d-none">
+                    <i class="bi bi-star-fill"></i> Premium
+                </span>
+            </div>
+        </header>
+
+        <div id="auth-section" class="mx-auto mb-4" style="padding:1em; border:1px solid #ccc; max-width:400px;">
+            <input id="email" type="email" placeholder="E-posta" class="form-control mb-2">
+            <input id="password" type="password" placeholder="Şifre" class="form-control mb-2">
+            <div class="d-flex gap-2 mb-2">
+                <button onclick="login()" class="btn btn-primary flex-grow-1">Giriş Yap</button>
+                <button onclick="register()" class="btn btn-success flex-grow-1">Kayıt Ol</button>
+                <button onclick="logout()" class="btn btn-outline-danger flex-grow-1">Çıkış Yap</button>
+            </div>
+            <div id="user-info" style="margin-top:1em; color:green;"></div>
+        </div>
+
+        <div class="modal fade" id="premiumModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="bi bi-star-fill text-warning"></i> Premium Üyelik</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="premiumLoginForm">
+                            <div class="mb-3">
+                                <label for="premiumPassword" class="form-label">Premium Şifre</label>
+                                <input type="password" class="form-control" id="premiumPassword" placeholder="Premium şifrenizi girin">
+                                <div class="form-text">Deneme şifresi: 1234567890</div>
+                            </div>
+                            <button id="premiumLoginBtn" class="btn btn-warning w-100">Premium Giriş</button>
+                        </div>
+                        <div id="premiumInfo" class="d-none">
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle-fill"></i> Premium üyeliğiniz aktif!
+                            </div>
+                            <h6 class="fw-bold">Premium Avantajları:</h6>
+                            <ul>
+                                <li>Sınırsız kelime ekleme</li>
+                                <li>Özel içerikler</li>
+                                <li>Reklamsız deneyim</li>
+                                <li>Gelişmiş istatistikler</li>
+                            </ul>
+                            <div class="text-center py-3">
+                                <h5 class="text-success">₺29.99 / aylık</h5>
+                                <small class="text-muted">*Otomatik yenilenir</small>
+                            </div>
+                            <button id="premiumLogoutBtn" class="btn btn-outline-danger w-100">Çıkış Yap</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-2 mb-4 flex-wrap">
+            
+            <a href="hat-sanati.html" class="btn btn-warning nav-btn" title="Yazı sanatları">
+                <i class="bi bi-pen-fill"></i>
+            </a>
+            <a href="https://www.osmanlicagazeteler.org/" target="_blank" class="btn btn-info nav-btn" title="Osmanlıca Gazeteler">
+                <i class="bi bi-newspaper"></i>
+            </a>
+            <a href="https://www.osmanlicagazeteler.org/Sozluk.php" target="_blank" class="btn btn-info nav-btn" title="Osmanlıca Sözlük">
+                <i class="bi bi-journal-bookmark"></i>
+            </a>
+            <a href="premium.html" class="btn btn-warning nav-btn" title="Premium Üyelik">
+                <i class="bi bi-star-fill"></i>
+            </a>
+            <a href="profile.html" class="btn btn-secondary nav-btn" title="Profil">
+                <i class="bi bi-person-fill"></i>
+            </a>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+  emailjs.init("8BdNp7u1PufddSEM8"); // 
+</script>
+            <a href="destek.html" class="btn btn-primary nav-btn" title="Destek">
+                <i class="bi bi-heart-fill"></i>
+            </a>
+        </div>
+
+        <div class="card search-card mb-3">
+            <div class="card-body">
+                <div class="input-group">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Kelime ara...">
+                    <button id="searchButton" class="btn btn-primary" type="button">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <main>
+            <div class="card word-card mb-3">
+                <div class="card-body">
+                    <div class="word-display text-center py-3">
+                        <h2 id="osmanlicaKelime" class="osmanlica-font">---</h2>
+                        <p id="transliteration" class="transliteration">---</p>
+                        <p id="meaning" class="meaning">Lütfen kelime listesi yükleyin</p>
+                    </div>
+                    <div class="d-flex justify-content-center gap-2 mb-4 flex-wrap">
+                        <button id="oncekiKelimeBtn" class="btn btn-secondary nav-btn" title="Önceki kelime">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                        <button id="rastgeleKelimeBtn" class="btn btn-info nav-btn" title="Rastgele kelime">
+                            <i class="bi bi-shuffle"></i>
+                        </button>
+                        <button id="sonrakiKelimeBtn" class="btn btn-secondary nav-btn" title="Sonraki kelime">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="knowledge-buttons d-flex justify-content-center gap-3">
+                        <button id="bilmiyorumBtn" class="btn btn-danger nav-btn" title="Bilmiyorum">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                        <button id="biliyorumBtn" class="btn btn-success nav-btn" title="Biliyorum">
+                            <i class="bi bi-check-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUIZ BAŞLAT KISMI -->
+            <div class="text-center my-3">
+                <button id="startQuizBtn" class="btn btn-danger">
+                    <i class="bi bi-question-circle"></i> Quiz Başlat
+                </button>
+            </div>
+            <!-- Quiz Modalı -->
+            <div id="quizModal" class="modal" tabindex="-1" style="display:none; background:rgba(0,0,0,0.2)">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 id="quizQuestion" class="modal-title"></h5>
+                            <button type="button" class="btn-close" onclick="closeQuizModal()"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="quizOptions"></div>
+                            <button id="nextQuestionBtn" class="btn btn-info w-100 mt-2" style="display:none;">Sonraki Soru</button>
+                            <button id="endQuizBtn" class="btn btn-danger w-100 mt-2" style="display:none;">Quiz Bitir</button>
+                            <p id="quizScore" class="mt-3"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- QUIZ SONU -->
+
+            <div class="card info-card mb-3">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <span id="kelimeSayaci" class="badge bg-primary mb-2 mb-md-0">
+                            <i class="bi bi-bar-chart"></i> <span class="counter-text">0/0</span>
+                        </span>
+                        <div>
+                            <button id="premiumBtn" class="btn btn-sm btn-warning me-2" title="Premium Üyelik" data-bs-toggle="modal" data-bs-target="#premiumModal">
+                                <i class="bi bi-star-fill"></i>
+                            </button>
+                            <div id="listeButonlari" class="list-buttons d-inline-flex flex-wrap gap-2">
+                                <!-- Liste butonları buraya eklenecek -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card upload-card">
+                <div class="card-body">
+                    <h5 class="card-title mb-3"><i class="bi bi-file-earmark-arrow-up"></i> Kelime Listesi</h5>
+                    <div class="d-flex gap-2 mb-3">
+                        <button id="mevcutListeyeEkleBtn" class="btn btn-warning flex-grow-1 nav-btn" title="Mevcut listeye ekle">
+                            <i class="bi bi-plus-circle"></i>
+                        </button>
+                        <button id="yeniListeOlusturBtn" class="btn btn-success flex-grow-1 nav-btn" title="Yeni liste oluştur">
+                            <i class="bi bi-file-earmark-plus"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2 mb-3">
+                        <button id="yeniListeEkleBtn" class="btn btn-outline-primary flex-grow-1 nav-btn" title="Boş liste ekle">
+                            <i class="bi bi-plus-lg"></i>
+                        </button>
+                        <button id="listeyiSilBtn" class="btn btn-outline-danger flex-grow-1 nav-btn" title="Listeyi sil">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                    <input type="file" id="jsonFileInput" accept=".json" class="form-control">
+                    <div id="wordLimitAlert" class="alert alert-warning mt-2 d-none">
+                        <i class="bi bi-exclamation-triangle"></i> Ücretsiz sürümde maksimum 100 kelime ekleyebilirsiniz. Premium üye olun!
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="social-media-bar">
+            <a href="https://wa.me/+905309082276" class="social-btn btn btn-success" data-bs-toggle="tooltip" title="WhatsApp">
+                <i class="bi bi-whatsapp"></i>
+            </a>
+            <a href="https://t.me/osmanlicaogren" class="social-btn btn btn-primary" data-bs-toggle="tooltip" title="Telegram">
+                <i class="bi bi-telegram"></i>
+            </a>
+            <a href="mailto:ozzasci@gmail.com" class="social-btn btn btn-danger" data-bs-toggle="tooltip" title="E-mail">
+                <i class="bi bi-envelope-fill"></i>
+            </a>
+            <a href="destek.html" class="social-btn btn support-btn" data-bs-toggle="tooltip" title="Destek Olun">
+                <i class="bi bi-heart-fill"></i>
+            </a>
+        </div>
+<div class="d-block d-md-none">
+  <a href="bagıs.html" class="btn btn-success w-100 mb-6">
+    <i class="bi bi-heart-fill"></i> Hızlı Destek
+  </a>
+</div>
+        <footer>
+            <div class="text-center py-2 border-top small">
+                &copy; 2025 Osmanlıca Öğren | Tüm Hakları Saklıdır
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+</body>
+</html>

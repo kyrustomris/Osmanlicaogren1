@@ -36,15 +36,11 @@ class OsmanlicaUygulamasi {
             nextQuestionBtn: document.getElementById('nextQuestionBtn'),
             endQuizBtn: document.getElementById('endQuizBtn'),
             quizScore: document.getElementById('quizScore'),
-            supportForm: document.getElementById('supportForm'),
-            supportName: document.getElementById('supportName'),
-            supportEmail: document.getElementById('supportEmail'),
-            supportMessage: document.getElementById('supportMessage'),
-            supportSubmitBtn: document.getElementById('supportSubmitBtn'),
-            supportSubmitText: document.getElementById('supportSubmitText'),
-            supportSpinner: document.getElementById('supportSpinner'),
-            supportAlert: document.getElementById('supportAlert'),
-            supportModal: document.getElementById('supportModal') ? new bootstrap.Modal(document.getElementById('supportModal')) : null
+            profileBtn: document.getElementById('profileBtn'),
+            authSection: document.getElementById('auth-section'),
+            loginBtn: document.getElementById('loginBtn'),
+            registerBtn: document.getElementById('registerBtn'),
+            logoutBtn: document.getElementById('logoutBtn')
         };
 
         this.kelimeListeleri = {};
@@ -67,7 +63,6 @@ class OsmanlicaUygulamasi {
 
         this.eventListeners = new Map();
 
-        // Kritik elementleri kontrol et
         const requiredElements = ['osmanlicaKelime', 'transliteration', 'meaning', 'kelimeSayaci'];
         for (const el of requiredElements) {
             if (!this.elements[el]) {
@@ -102,10 +97,9 @@ class OsmanlicaUygulamasi {
             const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
             const openButtons = document.querySelectorAll(`[data-bs-toggle="modal"][data-bs-target="#${modalId}"]`);
 
-            // Modal başlangıç durumu
             if (!modal.classList.contains('show')) {
                 modal.setAttribute('aria-hidden', 'true');
-                modal.style.pointerEvents = 'none'; // inert yerine yedek çözüm
+                modal.style.pointerEvents = 'none';
             }
 
             const shownHandler = () => {
@@ -118,7 +112,6 @@ class OsmanlicaUygulamasi {
             };
 
             const hideHandler = () => {
-                // Modal kapanmadan önce odak uygun bir elemente taşınır
                 let focusTarget = openButtons.length > 0 ? openButtons[0] : document.body;
                 openButtons.forEach(button => {
                     if (button.getAttribute('aria-expanded') === 'true') {
@@ -127,7 +120,6 @@ class OsmanlicaUygulamasi {
                 });
                 focusTarget.focus();
 
-                // Odak taşındıktan sonra aria-hidden uygulanır
                 setTimeout(() => {
                     modal.setAttribute('aria-hidden', 'true');
                     modal.style.pointerEvents = 'none';
@@ -185,27 +177,6 @@ class OsmanlicaUygulamasi {
             this.eventListeners.set('premium-modal-shown', premiumShownHandler);
         }
 
-        if (this.elements.supportModal) {
-            const supportShownHandler = () => {
-                if (this.elements.supportName) {
-                    this.elements.supportName.focus();
-                } else {
-                    const closeButton = this.elements.supportModal._element.querySelector('.btn-close');
-                    if (closeButton) closeButton.focus();
-                }
-            };
-            this.elements.supportModal._element.addEventListener('shown.bs.modal', supportShownHandler);
-            this.eventListeners.set('support-modal-shown', supportShownHandler);
-
-            const supportHideHandler = () => {
-                const focusTarget = document.querySelector('.support-btn') || document.body;
-                focusTarget.focus();
-                this.resetSupportForm();
-            };
-            this.elements.supportModal._element.addEventListener('hide.bs.modal', supportHideHandler);
-            this.eventListeners.set('support-modal-hide', supportHideHandler);
-        }
-
         if (this.elements.quizModal) {
             const quizShownHandler = () => {
                 const firstOption = this.elements.quizModal._element.querySelector('.quiz-option');
@@ -229,17 +200,6 @@ class OsmanlicaUygulamasi {
         }
     }
 
-    resetSupportForm() {
-        if (this.elements.supportForm) this.elements.supportForm.reset();
-        if (this.elements.supportAlert) {
-            this.elements.supportAlert.classList.add('d-none');
-            this.elements.supportAlert.innerHTML = '';
-        }
-        if (this.elements.supportSubmitBtn) this.elements.supportSubmitBtn.disabled = false;
-        if (this.elements.supportSpinner) this.elements.supportSpinner.classList.add('d-none');
-        if (this.elements.supportSubmitText) this.elements.supportSubmitText.textContent = 'Gönder';
-    }
-
     async firebaseReady() {
         if (!window.firebase || !window.firebase.auth) {
             console.error('Firebase başlatılamadı');
@@ -247,22 +207,26 @@ class OsmanlicaUygulamasi {
             return;
         }
 
-        if (!window.currentUser) {
-            this.kelimeListeleri = {};
-            this.aktifListeAdi = null;
-            this.listeButonlariniGuncelle();
-            this.kelimeGoster();
-            this.premium = false;
-            return;
-        }
+        auth.onAuthStateChanged(async user => {
+            window.currentUser = user;
+            if (!user) {
+                this.kelimeListeleri = {};
+                this.aktifListeAdi = null;
+                this.listeButonlariniGuncelle();
+                this.kelimeGoster();
+                this.premium = false;
+                this.updatePremiumUI();
+                return;
+            }
 
-        try {
-            await this.loadUserPremium();
-            await this.firestoreListeleriYukle();
-        } catch (error) {
-            console.error('Firebase başlatma hatası:', error);
-            this.showAlert('Veriler yüklenirken bir hata oluştu.', 'danger');
-        }
+            try {
+                await this.loadUserPremium();
+                await this.firestoreListeleriYukle();
+            } catch (error) {
+                console.error('Firebase başlatma hatası:', error);
+                this.showAlert('Veriler yüklenirken bir hata oluştu.', 'danger');
+            }
+        });
     }
 
     async loadUserPremium() {
@@ -292,6 +256,12 @@ class OsmanlicaUygulamasi {
         }
         if (this.elements.premiumLogoutBtn) {
             this.elements.premiumLogoutBtn.classList.toggle('d-none', !this.premium);
+        }
+        if (this.elements.authSection) {
+            this.elements.authSection.classList.toggle('d-none', !!window.currentUser);
+        }
+        if (this.elements.logoutBtn) {
+            this.elements.logoutBtn.classList.toggle('d-none', !window.currentUser);
         }
     }
 
@@ -631,68 +601,6 @@ class OsmanlicaUygulamasi {
         return array;
     }
 
-    async handleSupportForm(e) {
-        e.preventDefault();
-        if (!this.elements.supportForm || !this.elements.supportSubmitBtn || !this.elements.supportSubmitText || !this.elements.supportSpinner || !this.elements.supportAlert) return;
-
-        this.elements.supportSubmitBtn.disabled = true;
-        this.elements.supportSubmitText.textContent = 'Gönderiliyor...';
-        this.elements.supportSpinner.classList.remove('d-none');
-        this.elements.supportAlert.classList.add('d-none');
-
-        try {
-            if (!window.emailjs) throw new Error('EmailJS yüklenemedi.');
-            const formData = {
-                from_name: this.elements.supportName.value.trim(),
-                from_email: this.elements.supportEmail.value.trim(),
-                message: this.elements.supportMessage.value.trim(),
-                app_name: 'Osmanlıca Öğren'
-            };
-
-            if (!formData.from_name || !formData.from_email || !formData.message) {
-                throw new Error('Lütfen tüm alanları doldurunuz');
-            }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.from_email)) {
-                throw new Error('Geçerli bir e-posta adresi giriniz');
-            }
-
-            await emailjs.send(
-                this.config.emailJsServiceId,
-                this.config.emailJsTemplateId,
-                formData,
-                this.config.emailJsUserId
-            );
-
-            this.elements.supportAlert.classList.remove('alert-danger');
-            this.elements.supportAlert.classList.add('alert-success');
-            this.elements.supportAlert.innerHTML = `
-                <i class="bi bi-check-circle-fill"></i> 
-                Mesajınız başarıyla gönderildi! Teşekkür ederiz.
-            `;
-            this.elements.supportAlert.classList.remove('d-none');
-
-            this.elements.supportForm.reset();
-
-            setTimeout(() => {
-                if (this.elements.supportModal) this.elements.supportModal.hide();
-            }, 3000);
-        } catch (error) {
-            console.error('Destek formu gönderim hatası:', error);
-            this.elements.supportAlert.classList.remove('alert-success');
-            this.elements.supportAlert.classList.add('alert-danger');
-            this.elements.supportAlert.innerHTML = `
-                <i class="bi bi-exclamation-triangle-fill"></i> 
-                ${error.message || 'Gönderim hatası. Lütfen daha sonra tekrar deneyin.'}
-            `;
-            this.elements.supportAlert.classList.remove('d-none');
-        } finally {
-            this.elements.supportSubmitText.textContent = 'Gönder';
-            this.elements.supportSpinner.classList.add('d-none');
-            this.elements.supportSubmitBtn.disabled = false;
-        }
-    }
-
     eventListenerlariAyarla() {
         this.elements.themeButtons.forEach(btn => {
             if (!btn.dataset.theme) return;
@@ -700,6 +608,56 @@ class OsmanlicaUygulamasi {
             btn.addEventListener('click', clickHandler);
             this.eventListeners.set(`theme-btn-${btn.dataset.theme}`, clickHandler);
         });
+
+        if (this.elements.profileBtn) {
+            const clickHandler = (e) => {
+                e.preventDefault();
+                if (window.currentUser) {
+                    window.location.href = 'profil.html';
+                } else {
+                    this.showAlert('Profil sayfasına erişmek için lütfen giriş yapın.', 'warning');
+                    if (this.elements.authSection) {
+                        this.elements.authSection.classList.remove('d-none');
+                    }
+                }
+            };
+            this.elements.profileBtn.addEventListener('click', clickHandler);
+            this.eventListeners.set('profileBtn-click', clickHandler);
+        }
+
+        if (this.elements.loginBtn) {
+            const clickHandler = () => {
+                const email = this.elements.email.value;
+                const password = this.elements.password.value;
+                auth.signInWithEmailAndPassword(email, password)
+                    .then(() => this.showAlert('Giriş başarılı!', 'success'))
+                    .catch(error => this.showAlert('Giriş hatası: ' + error.message, 'danger'));
+            };
+            this.elements.loginBtn.addEventListener('click', clickHandler);
+            this.eventListeners.set('loginBtn-click', clickHandler);
+        }
+
+        if (this.elements.registerBtn) {
+            const clickHandler = () => {
+                const email = this.elements.email.value;
+                const password = this.elements.password.value;
+                auth.createUserWithEmailAndPassword(email, password)
+                    .then(() => this.showAlert('Kayıt başarılı!', 'success'))
+                    .catch(error => this.showAlert('Kayıt hatası: ' + error.message, 'danger'));
+            };
+            this.elements.registerBtn.addEventListener('click', clickHandler);
+            this.eventListeners.set('registerBtn-click', clickHandler);
+        }
+
+        if (this.elements.logoutBtn) {
+            const clickHandler = () => {
+                auth.signOut()
+                    .then(() => this.showAlert('Çıkış yapıldı', 'success'))
+                    .catch(error => this.showAlert('Çıkış hatası: ' + error.message, 'danger'));
+            };
+            this.elements.logoutBtn.addEventListener('click', clickHandler);
+            this.eventListeners.set('logoutBtn-click', clickHandler);
+        }
 
         const buttonListeners = [
             { element: this.elements.oncekiKelimeBtn, handler: () => this.oncekiKelime(), id: 'oncekiKelimeBtn' },
@@ -756,7 +714,30 @@ class OsmanlicaUygulamasi {
             { element: this.elements.startQuizBtn, handler: () => this.startQuiz(), id: 'startQuizBtn' },
             { element: this.elements.nextQuestionBtn, handler: () => this.nextQuizQuestion(), id: 'nextQuestionBtn' },
             { element: this.elements.endQuizBtn, handler: () => this.endQuiz(), id: 'endQuizBtn' },
-            { element: this.elements.supportSubmitBtn, handler: (e) => this.handleSupportForm(e), id: 'supportSubmitBtn' }
+            { element: this.elements.premiumLoginBtn, handler: async () => {
+                const password = this.elements.premiumPassword?.value;
+                if (password === '1234567890') {
+                    if (window.currentUser) {
+                        await db.collection("users").doc(window.currentUser.uid).set({ premium: true }, { merge: true });
+                        this.premium = true;
+                        this.updatePremiumUI();
+                        this.showAlert('Premium üyelik aktif edildi!', 'success');
+                        if (this.elements.premiumModal) this.elements.premiumModal.hide();
+                    } else {
+                        this.showAlert('Premium üyelik için önce giriş yapmalısınız.', 'warning');
+                    }
+                } else {
+                    this.showAlert('Geçersiz şifre.', 'danger');
+                }
+            }, id: 'premiumLoginBtn' },
+            { element: this.elements.premiumLogoutBtn, handler: async () => {
+                if (window.currentUser) {
+                    await db.collection("users").doc(window.currentUser.uid).set({ premium: false }, { merge: true });
+                    this.premium = false;
+                    this.updatePremiumUI();
+                    this.showAlert('Premium üyelik sonlandırıldı.', 'info');
+                }
+            }, id: 'premiumLogoutBtn' }
         ];
 
         buttonListeners.forEach(({ element, handler, id }) => {
@@ -773,17 +754,6 @@ class OsmanlicaUygulamasi {
             this.elements.searchInput.addEventListener('keyup', keyupHandler);
             this.eventListeners.set('searchInput-keyup', keyupHandler);
         }
-
-        document.querySelectorAll('[href="destek.html"], .support-btn').forEach(btn => {
-            const clickHandler = (e) => {
-                e.preventDefault();
-                if (this.elements.supportModal) {
-                    this.elements.supportModal.show();
-                }
-            };
-            btn.addEventListener('click', clickHandler);
-            this.eventListeners.set(`support-btn-${btn.id || Math.random()}`, clickHandler);
-        });
     }
 
     cleanup() {
@@ -812,17 +782,31 @@ class OsmanlicaUygulamasi {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    try {
-        window.osmanlicaApp = new OsmanlicaUygulamasi();
-    } catch (error) {
-        console.error('OsmanlicaUygulamasi başlatılamadı:', error);
-        const container = document.querySelector('.container');
-        if (container) {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-danger alert-dismissible fade show';
-            alert.setAttribute('role', 'alert');
-            alert.innerHTML = `Uygulama başlatılamadı: ${error.message}<button class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>`;
-            container.prepend(alert);
+    if (window.location.pathname.includes('destek.html') || window.location.pathname.includes('profil.html')) {
+        const app = {
+            temaYukle() {
+                const savedTheme = localStorage.getItem('osmanlicaTheme') || 'light';
+                this.temaDegistir(savedTheme);
+            },
+            temaDegistir(theme) {
+                document.body.className = `${theme}-theme`;
+                localStorage.setItem('osmanlicaTheme', theme);
+            }
+        };
+        app.temaYukle();
+    } else {
+        try {
+            window.osmanlicaApp = new OsmanlicaUygulamasi();
+        } catch (error) {
+            console.error('OsmanlicaUygulamasi başlatılamadı:', error);
+            const container = document.querySelector('.container');
+            if (container) {
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-danger alert-dismissible fade show';
+                alert.setAttribute('role', 'alert');
+                alert.innerHTML = `Uygulama başlatılamadı: ${error.message}<button class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>`;
+                container.prepend(alert);
+            }
         }
     }
 });
